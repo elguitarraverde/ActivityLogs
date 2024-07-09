@@ -1,0 +1,12 @@
+/node_modules/
+/vendor/
+package-lock.json
+*.cache
+*.lock
+
+# phpstorm
+/.idea/
+
+# vscode
+.vscode
+*.code-workspace

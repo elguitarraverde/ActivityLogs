@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view>
+    <columns>
+        <column name="ip" order="100">
+            <widget type="text" fieldname="ip"/>
+        </column>
+        <column name="user" order="110">
+            <widget type="text" fieldname="nick"/>
+        </column>
+        <column name="method" order="120">
+            <widget type="text" fieldname="method"/>
+        </column>
+        <column name="action" order="130">
+            <widget type="text" fieldname="action"/>
+        </column>
+        <column name="url" order="140">
+            <widget type="text" fieldname="uri"/>
+        </column>
+    </columns>
+
+    <rows>
+        <row type="status">
+            <option color="success" fieldname="method">GET</option>
+            <option color="warning" fieldname="method">neq:GET</option>
+        </row>
+    </rows>
+</view>

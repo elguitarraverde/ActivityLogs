@@ -1,0 +1,41 @@
+{% block body %}
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col">
+                <div class="card mb-3">
+                    <h5 class="card-header">{{ trans('user') }}</h5>
+                    <div class="card-body">
+                        <p>{{ trans('nick') }}: <strong>{{ fsc.model.nick }}</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card mb-3">
+                    <h5 class="card-header">{{ trans('ip') }}</h5>
+                    <div class="card-body">
+                        <p>{{ trans('ip') }}: <strong>{{ fsc.model.ip }}</strong></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card mb-3">
+            <h5 class="card-header">{{ trans('request') }}</h5>
+            <div class="card-body">
+                <p>{{ trans('url') }}: <strong>{{ fsc.model.uri }}</strong></p>
+                <p>{{ trans('method') }}: <strong>{{ fsc.model.method }}</strong></p>
+                <p>{{ trans('action') }}: <strong>{{ fsc.model.action }}</strong></p>
+                <p>{{ trans('payload') }}:
+                <pre>{{ dump(fsc.model.context()) }}</pre>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
