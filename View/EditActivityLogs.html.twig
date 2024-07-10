@@ -31,7 +31,7 @@
                 <p>{{ trans('method') }}: <strong>{{ fsc.model.method }}</strong></p>
                 <p>{{ trans('action') }}: <strong>{{ fsc.model.action }}</strong></p>
                 <p>{{ trans('payload') }}:
-                <pre>{{ dump(fsc.model.context()) }}</pre>
+                <pre>{{ printArray(fsc.model.context().payload) }}</pre>
                 </p>
             </div>
         </div>

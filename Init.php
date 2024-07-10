@@ -3,11 +3,13 @@
 namespace FacturaScripts\Plugins\ActivityLogs;
 
 use Exception;
+use FacturaScripts\Core\Html;
 use FacturaScripts\Core\Session;
 use FacturaScripts\Core\Base\InitClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Plugins\ActivityLogs\Model\ActivityLogs;
 use Symfony\Component\HttpFoundation\Request;
+use Twig\TwigFunction;
 
 class Init extends InitClass
 {
@@ -16,6 +18,10 @@ class Init extends InitClass
 
     public function init(): void
     {
+        Html::addFunction(new TwigFunction('printArray', function (array $data) {
+            return print_r($data);
+        }));
+
         $this->request = Request::createFromGlobals();
 
         if ($this->getNickUser()) {
