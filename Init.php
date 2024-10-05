@@ -2,10 +2,12 @@
 
 namespace FacturaScripts\Plugins\ActivityLogs;
 
+use DateTime;
 use Exception;
+use FacturaScripts\Core\Cache;
 use FacturaScripts\Core\Html;
 use FacturaScripts\Core\Session;
-use FacturaScripts\Core\Base\InitClass;
+use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Plugins\ActivityLogs\Model\ActivityLogs;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +32,10 @@ class Init extends InitClass
         Html::addFunction(new TwigFunction('printArray', function (array $data) {
             return print_r($data, true);
         }));
+
+        if (Tools::settings('activitylogs', 'guardarenarchivo', false)){
+            $this->guardarEnArchivo();
+        }
     }
 
     private function getNickUser(): ?string
@@ -123,5 +129,64 @@ class Init extends InitClass
         }
 
         return $params;
+    }
+
+    private function guardarEnArchivo()
+    {
+        // si no existe la fecha de ultima comprobacion, la creamos
+        if(!Cache::get('activity-logs-last-save-to-file')){
+            Cache::set('activity-logs-last-save-to-file', date('Y-m-d'));
+        }
+
+        // Obtener la fecha actual
+        $now = new DateTime();
+
+        // Crear un objeto DateTime con la fecha de la última comprobación
+        $lastCheck = Cache::get('activity-logs-last-save-to-file');
+        $lastCheckDate = new DateTime($lastCheck);
+
+        // Calcular la diferencia entre las dos fechas
+        $interval = $now->diff($lastCheckDate);
+
+        // Verificar si ha pasado más de un día
+        if ($interval->days > 0) {
+            $activityLogs = ActivityLogs::all();
+            $logsAgrupados = [];
+            foreach ($activityLogs as $log) {
+                // si la fecha no es correcta, asignamos una
+                // esto lo hacemos porque inicialmente el plugin no registraba las fechas
+                // y al añadir el campo fecha, los logs antiguos estan sin fecha
+                if(empty($log->fecha) || false === strtotime($log->fecha)){
+                    $log->fecha = '2024-01-01';
+                    $log->save();
+                }
+
+                $logsAgrupados[date('Y-m-d', strtotime($log->fecha))][] = $log;
+            }
+
+            // excluimos los logs de hoy
+            unset($logsAgrupados[date('Y-m-d')]);
+
+            // preparamos directorio
+            $folderPath = Tools::folder('MyFiles', 'activity-logs');
+            Tools::folderCheckOrCreate($folderPath);
+
+            // Guardamos en disco y eliminamos de la base de datos.
+            foreach ($logsAgrupados as $fecha => $logs) {
+                $path = $folderPath . DIRECTORY_SEPARATOR . $fecha . '_activity_logs.json';
+                if(false === file_put_contents($path, json_encode($logs, JSON_PRETTY_PRINT))){
+                    continue;
+                }
+
+                // si se ha guardado en el archivo correctamente, entonces los eliminamos de la base de datos
+                foreach ($logs as $log) {
+                    /** @var ActivityLogs $log */
+                    $log->delete();
+                }
+
+                // Actualizamos fecha ultima comprobación.
+                Cache::set('activity-logs-last-save-to-file', date('Y-m-d'));
+            }
+        }
     }
 }
