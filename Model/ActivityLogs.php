@@ -28,6 +28,15 @@ class ActivityLogs extends ModelClass
     /** @var string */
     public $context;
 
+    /** @var string */
+    public $fecha;
+
+    public function clear()
+    {
+        parent::clear();
+        $this->fecha = Tools::dateTime();
+    }
+
     public static function primaryColumn(): string
     {
         return 'id';

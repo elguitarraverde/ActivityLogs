@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view>
+    <columns>
+        <group name="data1" numcolumns="12">
+            <column name="name" display="none" order="0">
+                <widget type="text" fieldname="name" readonly="true" required="true" />
+            </column>
+            <column name="Url´s a excluir" numcolumns="12" order="100" description="Url´s a excluir separadas por coma. ejemplo: EditAlbaranProveedor,ListAsiento">
+                <widget type="text" fieldname="excludedurls"/>
+            </column>
+        </group>
+        <group name="data2" numcolumns="12">
+            <column name="Guardar diariamente en archivo" numcolumns="12" order="110" description="Guardar registros diariamente en el disco. Así evitamos que la base de datos crezca mucho.">
+                <widget type="checkbox" fieldname="guardarenarchivo"/>
+            </column>
+        </group>
+    </columns>
+</view>

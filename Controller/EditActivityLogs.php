@@ -10,7 +10,7 @@ class EditActivityLogs extends EditController
     {
         $data = parent::getPageData();
         $data['menu'] = 'admin';
-        $data['title'] = 'activity-logs';
+        $data['title'] = 'activitylogs';
         $data['showonmenu'] = false;
         return $data;
     }
@@ -22,7 +22,7 @@ class EditActivityLogs extends EditController
 
     protected function createViews()
     {
-        $this->addHtmlView('EditActivityLogs', 'EditActivityLogs', 'ActivityLogs', 'activity-logs');
+        $this->addHtmlView('EditActivityLogs', 'EditActivityLogs', 'ActivityLogs', 'activitylogs');
         $this->setSettings('EditActivityLogs', 'btnNew', false);
     }
 }

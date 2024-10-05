@@ -18,16 +18,18 @@ class Init extends InitClass
 
     public function init(): void
     {
-        Html::addFunction(new TwigFunction('printArray', function (array $data) {
-            return print_r($data);
-        }));
-
         $this->request = Request::createFromGlobals();
 
-        if ($this->getNickUser()) {
-            $this->logRequest();
-            $this->saveLogs();
+        if(false === $this->urlExcluded()){
+            if ($this->getNickUser()) {
+                $this->logRequest();
+                $this->saveLogs();
+            }
         }
+
+        Html::addFunction(new TwigFunction('printArray', function (array $data) {
+            return print_r($data, true);
+        }));
     }
 
     private function getNickUser(): ?string
@@ -39,10 +41,11 @@ class Init extends InitClass
     private function logRequest(): array
     {
         return [
+            'fecha' => Tools::dateTime(),
             'ip' => Session::getClientIp(),
             'nick' => $this->getNickUser(),
             'method' => $this->request->getMethod(),
-            'action' => $this->request->request->get('action'),
+            'action' => $this->request->request->get('action', $this->request->query->get('action', '')),
             'uri' => $this->request->getUri(),
             'context' => json_encode($this->getRequestData()),
         ];
@@ -52,8 +55,8 @@ class Init extends InitClass
     {
         return [
             'payload' => [
-                'query' => $this->request->query->all(),
-                'request' => $this->request->request->all(),
+                'query' => $this->limpiarPasswords($this->request->query->all()),
+                'request' => $this->limpiarPasswords($this->request->request->all()),
             ],
         ];
     }
@@ -76,5 +79,49 @@ class Init extends InitClass
     public function uninstall(): void
     {
         //
+    }
+
+    private function urlExcluded(): bool
+    {
+        // excluimos las llamadas por ajax
+        if($this->request->isXmlHttpRequest()){
+            return true;
+        }
+
+        // excluimos por defecto estas urls
+        $urls = ['ListActivityLogs', 'Notification'];
+
+        // añadimos las urls a excluir del usuario
+        $urlsSettings = explode(',', Tools::settings('activitylogs', 'excludedurls', ''));
+        if (!empty($urlsSettings)){
+            $urls = array_merge($urlsSettings, $urls);
+        }
+
+        foreach ($urls as $url){
+            if (stripos($this->request->getRequestUri(), trim($url))){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Evitamos guardar los passwords en el log
+     *
+     * @param array $params
+     *
+     * @return array
+     */
+    private function limpiarPasswords(array $params): array
+    {
+        foreach ($params as $key => $value) {
+            if(stripos($key, 'password')){
+                unset($params[$key]);
+            }
+        }
+
+        return $params;
     }
 }

@@ -10,16 +10,17 @@ class ListActivityLogs extends ListController
     {
         $pageData = parent::getPageData();
         $pageData['menu'] = 'admin';
-        $pageData['title'] = 'activity-logs';
+        $pageData['title'] = 'activitylogs';
         $pageData['icon'] = 'fas fa-archive';
         return $pageData;
     }
 
     protected function createViews(): void
     {
-        $this->addView('ListActivityLogs', 'ActivityLogs', 'activity-logs', 'fas fa-archive')
+        $this->addView('ListActivityLogs', 'ActivityLogs', 'activitylogs', 'fas fa-archive')
             ->addFilterAutocomplete('ListActivityLogs', 'nick', 'user', 'nick', 'activitylogs')
-            ->addFilterAutocomplete('ListActivityLogs', 'ip', 'ip', 'ip', 'activitylogs');
+            ->addFilterAutocomplete('ListActivityLogs', 'ip', 'ip', 'ip', 'activitylogs')
+            ->addFilterPeriod('fecha', 'period', 'fecha', true);
 
         $this->setSettings('ListActivityLogs', 'btnNew', false);
         $this->setSettings('ListActivityLogs', 'btnDelete', false);

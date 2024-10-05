@@ -7,6 +7,11 @@
     </column>
 
     <column>
+        <name>fecha</name>
+        <type>timestamp</type>
+        <null>NO</null>
+    </column>
+    <column>
         <name>ip</name>
         <type>character varying(40)</type>
     </column>
