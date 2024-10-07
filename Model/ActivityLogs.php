@@ -31,7 +31,7 @@ class ActivityLogs extends ModelClass
     /** @var string */
     public $fecha;
 
-    public function clear()
+    public function clear(): void
     {
         parent::clear();
         $this->fecha = Tools::dateTime();
@@ -58,7 +58,8 @@ class ActivityLogs extends ModelClass
         return parent::test();
     }
 
-    public function context()
+    /** @return array<string, mixed> */
+    public function context(): array
     {
         return json_decode(Tools::fixHtml($this->context), true);
     }

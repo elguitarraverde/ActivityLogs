@@ -6,6 +6,7 @@ use FacturaScripts\Core\Lib\ExtendedController\EditController;
 
 class EditActivityLogs extends EditController
 {
+    /** @return array<string, string> */
     public function getPageData(): array
     {
         $data = parent::getPageData();
@@ -20,7 +21,7 @@ class EditActivityLogs extends EditController
         return 'ActivityLogs';
     }
 
-    protected function createViews()
+    protected function createViews(): void
     {
         $this->addHtmlView('EditActivityLogs', 'EditActivityLogs', 'ActivityLogs', 'activitylogs');
         $this->setSettings('EditActivityLogs', 'btnNew', false);

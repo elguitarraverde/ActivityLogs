@@ -40,10 +40,16 @@ class Init extends InitClass
 
     private function getNickUser(): ?string
     {
+        // si se está haciendo login devolvemos el usuario del POST en lugar de la cookie
+        if($this->request->request->has('fsNick') && $this->request->request->get('action') == 'login'){
+            return $this->request->request->get('fsNick');
+        }
+
         $cookiesNick = $this->request->cookies->get('fsNick', '');
         return !empty($cookiesNick) ? (string)$cookiesNick : null;
     }
 
+    /** @return array<string, mixed> */
     private function logRequest(): array
     {
         return [
@@ -57,6 +63,7 @@ class Init extends InitClass
         ];
     }
 
+    /** @return array<string, mixed> */
     private function getRequestData(): array
     {
         return [
@@ -99,9 +106,7 @@ class Init extends InitClass
 
         // añadimos las urls a excluir del usuario
         $urlsSettings = explode(',', Tools::settings('activitylogs', 'excludedurls', ''));
-        if (!empty($urlsSettings)){
-            $urls = array_merge($urlsSettings, $urls);
-        }
+        $urls = array_merge($urlsSettings, $urls);
 
         foreach ($urls as $url){
             if (stripos($this->request->getRequestUri(), trim($url))){
@@ -116,9 +121,9 @@ class Init extends InitClass
     /**
      * Evitamos guardar los passwords en el log
      *
-     * @param array $params
+     * @param array<string, string> $params
      *
-     * @return array
+     * @return array<string, string>
      */
     private function limpiarPasswords(array $params): array
     {
@@ -131,7 +136,7 @@ class Init extends InitClass
         return $params;
     }
 
-    private function guardarEnArchivo()
+    private function guardarEnArchivo(): void
     {
         // si no existe la fecha de ultima comprobacion, la creamos
         if(!Cache::get('activity-logs-last-save-to-file')){
@@ -161,7 +166,9 @@ class Init extends InitClass
                     $log->save();
                 }
 
-                $logsAgrupados[date('Y-m-d', strtotime($log->fecha))][] = $log;
+                if (strtotime($log->fecha)){
+                    $logsAgrupados[date('Y-m-d', strtotime($log->fecha))][] = $log;
+                }
             }
 
             // excluimos los logs de hoy

@@ -1,0 +1,9 @@
+parameters:
+  level: 7
+  paths:
+    - .
+  scanDirectories:
+    - ../../Core
+    - ../../Dinamic
+  bootstrapFiles:
+    - dev/tools/bootstrap.php

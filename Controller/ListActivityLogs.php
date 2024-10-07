@@ -6,6 +6,7 @@ use FacturaScripts\Core\Lib\ExtendedController\ListController;
 
 class ListActivityLogs extends ListController
 {
+    /** @return array<string, string> */
     public function getPageData(): array
     {
         $pageData = parent::getPageData();
@@ -20,7 +21,8 @@ class ListActivityLogs extends ListController
         $this->addView('ListActivityLogs', 'ActivityLogs', 'activitylogs', 'fas fa-archive')
             ->addFilterAutocomplete('ListActivityLogs', 'nick', 'user', 'nick', 'activitylogs')
             ->addFilterAutocomplete('ListActivityLogs', 'ip', 'ip', 'ip', 'activitylogs')
-            ->addFilterPeriod('fecha', 'period', 'fecha', true);
+            ->addFilterPeriod('fecha', 'period', 'fecha', true)
+            ->addOrderBy(['fecha'], 'date', 2);
 
         $this->setSettings('ListActivityLogs', 'btnNew', false);
         $this->setSettings('ListActivityLogs', 'btnDelete', false);
