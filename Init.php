@@ -122,14 +122,14 @@ class Init extends InitClass
     /**
      * Evitamos guardar los passwords en el log
      *
-     * @param array<string, string> $params
+     * @param array<string|int, string> $params
      *
-     * @return array<string, string>
+     * @return array<string|int, string>
      */
     private function limpiarPasswords(array $params): array
     {
         foreach ($params as $key => $value) {
-            if(stripos($key, 'password')){
+            if(!is_int($key) && stripos($key, 'password') !== false){
                 unset($params[$key]);
             }
         }
@@ -137,7 +137,9 @@ class Init extends InitClass
         return $params;
     }
 
-    /** @throws DateMalformedStringException */
+    /**
+     * @throws Exception
+     */
     private function guardarEnArchivo(): void
     {
         // si no existe la fecha de ultima comprobacion, la creamos

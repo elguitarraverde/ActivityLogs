@@ -1,7 +1,9 @@
 parameters:
   level: 7
   paths:
-    - .
+    - Controller
+    - Model
+    - Init.php
   scanDirectories:
     - ../../Core
     - ../../Dinamic
