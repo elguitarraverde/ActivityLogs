@@ -2,6 +2,7 @@
 
 namespace FacturaScripts\Plugins\ActivityLogs;
 
+use DateMalformedStringException;
 use DateTime;
 use Exception;
 use FacturaScripts\Core\Cache;
@@ -136,6 +137,7 @@ class Init extends InitClass
         return $params;
     }
 
+    /** @throws DateMalformedStringException */
     private function guardarEnArchivo(): void
     {
         // si no existe la fecha de ultima comprobacion, la creamos
@@ -147,7 +149,7 @@ class Init extends InitClass
         $now = new DateTime();
 
         // Crear un objeto DateTime con la fecha de la última comprobación
-        $lastCheck = Cache::get('activity-logs-last-save-to-file');
+        $lastCheck = Cache::get('activity-logs-last-save-to-file') ?? 'now';
         $lastCheckDate = new DateTime($lastCheck);
 
         // Calcular la diferencia entre las dos fechas
